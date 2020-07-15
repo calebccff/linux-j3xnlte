@@ -915,6 +915,13 @@ config REGULATOR_SLG51000
 	  The SLG51000 is seven compact and customizable low dropout
 	  regulators.
 
+config REGULATOR_SPRD
+	tristate "Spreadtrum Power Regulators"
+	depends on ARCH_SC8825
+	default y if ARCH_SC8825
+	help
+	  This driver supports Spreadtrum voltage regulators.
+
 config REGULATOR_STM32_BOOSTER
 	tristate "STMicroelectronics STM32 BOOSTER"
 	depends on ARCH_STM32 || COMPILE_TEST

@@ -1,0 +1,162 @@
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+
+/* memory reserved for SMEM */
+/memreserve/ 0x87800000 0x500000; /* Offset:120M, Size:5M*/
+
+/* memory reserved for LTE modem */
+/memreserve/ 0x89600000 0x4380000; /* Offset:150M, Size:64.5M*/
+
+/* memory reserved for carveout mm (zsl)  */
+/memreserve/ 0x9B23B000 0x3939000; /* 8M*1.5*5, 4K alignment*/
+/* memory reserved for fb */
+/memreserve/ 0x9EB74000 0xA8C000; /* 720*1280*4*3 */
+
+/* memory reserved for ION */
+/memreserve/ 0x9F600000 0x708000; /* 720*1280*4*2 */
+
+/ {
+	compatible = "sprd,sc9830a";
+	model = "SC9830A";
+	sprd,sc-id = <9830 5 0x20000>;
+	#address-cells = <1>;
+	#size-cells = <1>;
+	interrupt-parent = <&gic>;
+
+	aliases {
+		display0 = &framebuffer0;
+	};
+
+	chosen {
+		#address-cells = <2>;
+        #size-cells = <2>;
+		ranges;
+		stdout-path = "display0";
+
+		framebuffer0: framebuffer@9eb74000 {
+            compatible = "simple-framebuffer";
+            reg = <0 0x9eb74000 0 0xA8C000>;
+            width = <720>;
+            height = <1280>;
+            stride = <(720 * 4)>;
+            format = "a8r8g8b8";
+            status = "okay";
+        };
+	};
+
+	rmem: reserved-memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		ramoops: ramoops@0xac300000 {
+			compatible = "ramoops";
+			reg = <0 0xac300000 0 0x400000>;
+			record-size = <0x40000>;
+			console-size = <0x40000>;
+			ftrace-size = <0x40000>;
+			pmsg-size = <0x200000>;
+			devinfo-size = <0x1000>;
+			ecc-size = <0x0>;
+		};
+
+		cma: linux,cma {
+			compatible = "shared-dma-pool";
+			size = <0x4000000>; /* 64MB */
+			reusable;
+			linux,cma-default;
+		};
+
+		fb_mem: memory@a1a10000 {
+            compatible = "removed-dma-pool";
+            no-map;
+            reg = <0 0x9eb74000 0 0xA8C000>;
+        };
+	};
+
+	memory {
+		device_type = "memory";
+		reg = <0x80000000 0x60000000>;
+	};
+
+
+	// rmem: reserved-memory {
+	// 	#address-cells = <1>;
+	// 	#size-cells = <1>;
+	// 	ranges;
+
+	// 	fb_mem: memory@a1a10000 {
+    //         compatible = "removed-dma-pool";
+    //         no-map;
+    //         reg = <0 0x9EB74000 0 0xA8C000>;
+    //     };
+
+	// 	cma: linux,cma {
+	// 		compatible = "shared-dma-pool";
+	// 		size = <0x4000000>; /* 64MB */
+	// 		reusable;
+	// 		linux,cma-default;
+	// 	};
+	// };
+
+	thermal-zones {
+	};
+
+	soc {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <1>;
+	};
+
+	cpus: cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		//enable-method = "brcm,bcm2836-smp";
+
+		v7_cpu0: cpu@0 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a7";
+			reg = <0xf00>;
+			clock-frequency = <800000000>;
+		};
+
+		v7_cpu1: cpu@1 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a7";
+			reg = <0xf01>;
+			clock-frequency = <800000000>;
+		};
+
+		v7_cpu2: cpu@2 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a7";
+			reg = <0xf02>;
+			clock-frequency = <800000000>;
+		};
+
+		v7_cpu3: cpu@3 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a7";
+			reg = <0xf03>;
+			clock-frequency = <800000000>;
+		};
+	};
+
+	gic: interrupt-controller@12001000 {
+		compatible = "arm,cortex-a15-gic", "arm,cortex-a9-gic";
+		#interrupt-cells = <3>;
+		#address-cells = <0>;
+		interrupt-controller;
+		reg = <0x12001000 0x1000>,
+			<0x12002000 0x1000>;
+	};
+
+	// arm-pmu {
+	// 	compatible = "arm,cortex-a7-pmu";
+	// 	interrupt-parent = <&local_intc>;
+	// 	interrupts = <9 IRQ_TYPE_LEVEL_HIGH>;
+	// };
+
+	clocks {
+	};
+};

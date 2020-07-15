@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: GPL-2.0-only
+config ARCH_SPRD
+	bool "Spreadtrum SC9830A SOC"
+	depends on ARCH_MULTI_V7
+	select GPIOLIB
+	select ARM_AMBA
+	select ARM_GIC
+	select ZONE_DMA
+	select ARM_TIMER_SP804
+	select HAVE_ARM_ARCH_TIMER
+	select VFP
+	select VFPv3
+	select NEON
+	select HAVE_SMP
+	select ARM_HAS_SG_CHAIN
+	select NEED_MACH_IO_H
+	select MFD_CORE
+	help
+	  Support for the Spreadtrum SC9830A SOC.
+	  Used in the Samsung Galaxy J3 / j3xnlte

@@ -1,0 +1,14 @@
+// SPDX-License-Identifier: GPL-2.0
+/dts-v1/;
+#include "sc9830a.dtsi"
+
+/ {
+	compatible = "sprd,sc9830a";
+	model = "SC9830A";
+	sprd,sc-id = <9830 5 0x20000>;
+
+	memory {
+		device_type = "memory";
+		reg = <0x80000000 0x60000000>;
+	};
+};
